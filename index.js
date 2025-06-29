@@ -47,6 +47,34 @@ controls.maxPolarAngle = Math.PI / 2; // Maximum angle (~100°)
 controls.minAzimuthAngle = -Math.PI / 2; // Left limit (-45°)
 controls.maxAzimuthAngle = Math.PI / 4;  // Right limit (45°)
 
+const eggPoints = [];
+for (let i = 0; i < 50; i++) {
+  const t = i / 50;
+  const x = Math.sin(Math.PI * t) * 0.5;
+  const y = t * 1.5 - 0.75;
+  eggPoints.push(new THREE.Vector2(x, y));
+}
+
+const eggGeometry = new THREE.LatheGeometry(eggPoints, 64);
+const eggMaterial = new THREE.MeshStandardMaterial({ color: 0xfff1c1, roughness: 0.6 });
+
+// Create multiple eggs
+for (let i = 0; i < 30; i++) {
+  const egg = new THREE.Mesh(eggGeometry, eggMaterial);
+
+  // Scale and position
+  egg.scale.set(0.02, 0.02, 0.02);
+  egg.position.set(-0.22 + Math.random() * .25, -0.2, Math.random() * -0.1); // slight spread
+
+  // Random rotation
+  egg.rotation.y = Math.random() * Math.PI * 2;
+  egg.rotation.x = Math.random() * 0.5 - 0.25;
+  egg.rotation.z = Math.random() * 0.5 - 0.25;
+
+  scene.add(egg);
+}
+
+
 // Load GLTF model
 const loader = new GLTFLoader();
 
