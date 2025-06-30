@@ -116,14 +116,12 @@ for (let i = 0; i < 30; i++) {
 const loader = new GLTFLoader();
 
 const dracoLoader = new DRACOLoader();
-// Path to Draco decoder files (you can use CDN or local)
-// Here using CDN from jsdelivr:
 dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/libs/draco/');
 
 loader.setDRACOLoader(dracoLoader);
 
-let chickenModel;  // Store chicken model reference
-let grassModel;    // Store grass model reference
+let chickenModel;  
+let grassModel;    
 
 // Load chicken model
 loader.load(
@@ -153,7 +151,7 @@ loader.load(
     function (gltf) {
         grassModel = gltf.scene;
         grassModel.position.set(0, -.21, 0); // Adjust position as needed
-        grassModel.scale.set(.2, .2, .2);    // Adjust scale as needed
+        grassModel.scale.set(.2, .3, .2);    // Adjust scale as needed
         scene.add(grassModel);
     },
     undefined,
