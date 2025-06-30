@@ -16,10 +16,6 @@ camera = new THREE.PerspectiveCamera(
     1000
 );
 
-const loaderTexture = new TextureLoader();
-loaderTexture.load('./assets/farm.jpg', function(texture) {
-  scene.background = texture;
-});
 
 camera.position.z = .5;
 camera.position.y = .1;
@@ -47,32 +43,58 @@ controls.maxPolarAngle = Math.PI / 2; // Maximum angle (~100°)
 controls.minAzimuthAngle = -Math.PI / 2; // Left limit (-45°)
 controls.maxAzimuthAngle = Math.PI / 4;  // Right limit (45°)
 
+const loaderTexture = new TextureLoader();
+
+function updateSceneBackground() {
+    const hour = new Date().getHours();
+    const isDayTime = hour >= 6 && hour < 19;
+
+    const texturePath = isDayTime
+        ? './assets/farm2.jpg'       // Day
+        : './assets/farm3.jpg'; // Night
+
+    loaderTexture.load(texturePath, function (texture) {
+        scene.background = texture;
+    });
+
+    ambientLight.color.setHex(isDayTime ? 0xffffff : 0x000000);
+
+}
+
+updateSceneBackground();
+
+
 const eggPoints = [];
 for (let i = 0; i < 50; i++) {
-  const t = i / 50;
-  const x = Math.sin(Math.PI * t) * 0.5;
-  const y = t * 1.5 - 0.75;
-  eggPoints.push(new THREE.Vector2(x, y));
+    const t = i / 50;
+    const x = Math.sin(Math.PI * t) * 0.5;
+    const y = t * 1.5 - 0.75;
+    eggPoints.push(new THREE.Vector2(x, y));
 }
+
+const eggs = []; // store eggs globally
 
 const eggGeometry = new THREE.LatheGeometry(eggPoints, 64);
 const eggMaterial = new THREE.MeshStandardMaterial({ color: 0xfff1c1, roughness: 0.6 });
 
 // Create multiple eggs
 for (let i = 0; i < 30; i++) {
-  const egg = new THREE.Mesh(eggGeometry, eggMaterial);
+    const egg = new THREE.Mesh(eggGeometry, eggMaterial);
 
-  // Scale and position
-  egg.scale.set(0.02, 0.02, 0.02);
-  egg.position.set(-0.22 + Math.random() * .25, -0.2, Math.random() * -0.1); // slight spread
+    // Scale and position
+    egg.scale.set(0.02, 0.02, 0.02);
+    egg.position.set(-0.22 + Math.random() * .25, -0.2, Math.random() * -0.1); // slight spread
 
-  // Random rotation
-  egg.rotation.y = Math.random() * Math.PI * 2;
-  egg.rotation.x = Math.random() * 0.5 - 0.25;
-  egg.rotation.z = Math.random() * 0.5 - 0.25;
+    // Random rotation
+    egg.rotation.y = Math.random() * Math.PI * 2;
+    egg.rotation.x = Math.random() * 0.5 - 0.25;
+    egg.rotation.z = Math.random() * 0.5 - 0.25;
 
-  scene.add(egg);
+    egg.visible = false; // initially hidden
+    scene.add(egg);
+    eggs.push(egg);
 }
+
 
 
 // Load GLTF model
@@ -124,6 +146,43 @@ loader.load(
         console.error('Error loading grassopt.glb:', error);
     }
 );
+
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+let revealedEggs = 0;
+
+function onClick(event) {
+    // Normalize mouse coordinates
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Set up raycaster
+    raycaster.setFromCamera(mouse, camera);
+
+    // Check intersection with chicken
+    if (chickenModel) {
+        const intersects = raycaster.intersectObject(chickenModel, true);
+        if (intersects.length > 0) {
+            revealEggsOneByOne();
+        }
+    }
+}
+
+window.addEventListener('click', onClick);
+
+function revealEggsOneByOne() {
+    if (revealedEggs >= eggs.length) return;
+
+    const interval = setInterval(() => {
+        if (revealedEggs >= eggs.length) {
+            clearInterval(interval);
+            return;
+        }
+        eggs[revealedEggs].visible = true;
+        revealedEggs++;
+    }, 100); // one egg every 100ms (adjust as needed)
+}
 
 
 
