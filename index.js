@@ -61,6 +61,7 @@ controls.maxPolarAngle = Math.PI / 2; // Maximum angle (~100°)
 controls.minAzimuthAngle = -Math.PI / 2; // Left limit (-45°)
 controls.maxAzimuthAngle = Math.PI / 4;  // Right limit (45°)
 
+
 const loaderTexture = new TextureLoader();
 
 function updateSceneBackground() {
@@ -68,7 +69,7 @@ function updateSceneBackground() {
     const isDayTime = hour >= 6 && hour < 19;
 
     const texturePath = isDayTime
-        ? './assets/farm2.jpg'       // Day
+        ? './assets/farm2.jpg'   // Day
         : './assets/farm3.jpg'; // Night
 
     loaderTexture.load(texturePath, function (texture) {
@@ -228,6 +229,26 @@ function revealEggsOneByOne() {
 //     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 //     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
 // });
+
+
+
+// Create a pivot at the center and attach the camera
+const cameraPivot = new THREE.Object3D();
+scene.add(cameraPivot);
+cameraPivot.add(camera);
+
+// Optionally reposition camera again relative to pivot
+camera.position.set(0, 1, 0.5); // adjust if needed
+
+// Create the orbit animation
+gsap.to(cameraPivot.rotation, {
+    y: Math.PI / 3,         // rotate 180 degrees
+    duration: 30,        // takes 4 seconds to rotate
+    repeat: -1,         // loop forever
+    yoyo: true,         // go back and forth
+    ease: 'power1.inOut'
+});
+
 
 
 // Animation loop
