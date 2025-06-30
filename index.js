@@ -52,6 +52,7 @@ controls.enableDamping = true; // smooth camera movement
 controls.dampingFactor = 0.05;
 controls.minDistance = .5; // how close the camera can get
 controls.maxDistance = 1; // how far the camera can zoom out
+controls.enablePan = false;
 
 controls.minPolarAngle = Math.PI / 2;   // Minimum angle (60°)
 controls.maxPolarAngle = Math.PI / 2; // Maximum angle (~100°)
