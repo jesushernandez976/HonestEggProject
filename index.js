@@ -23,16 +23,16 @@ camera.position.y = .3;
 camera.position.set(0, 0, 1.4);
 
 gsap.to(camera.position, {
-  duration: 3,     // 2 seconds animation
-  y: 0.3,
-  z: 0.5,
-  ease: 'power2.out',
-  onUpdate: () => {
-    camera.lookAt(0, 0, 0);  // Keep camera looking at the center during animation
-  },
-  onComplete: () => {
-    camera.lookAt(0, 0, 0);  // Final lookAt to keep camera steady
-  }
+    duration: 2,     // 2 seconds animation
+    y: 0.3,
+    z: 0.5,
+    ease: 'power2.out',
+    onUpdate: () => {
+        camera.lookAt(0, 0, 0);  // Keep camera looking at the center during animation
+    },
+    onComplete: () => {
+        camera.lookAt(0, 0, 0);  // Final lookAt to keep camera steady
+    }
 });
 
 renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -123,8 +123,8 @@ dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.132.2/examples/
 
 loader.setDRACOLoader(dracoLoader);
 
-let chickenModel;  
-let grassModel;    
+let chickenModel;
+let grassModel;
 
 // Load chicken model
 loader.load(
@@ -168,24 +168,27 @@ const mouse = new THREE.Vector2();
 
 let revealedEggs = 0;
 
-function onClick(event) {
-    // Normalize mouse coordinates
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+function handleTap(event) {
+  event.preventDefault();
 
-    // Set up raycaster
-    raycaster.setFromCamera(mouse, camera);
+  const touch = event.touches ? event.touches[0] : event;
+  mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
 
-    // Check intersection with chicken
-    if (chickenModel) {
-        const intersects = raycaster.intersectObject(chickenModel, true);
-        if (intersects.length > 0) {
-            revealEggsOneByOne();
-        }
+  raycaster.setFromCamera(mouse, camera);
+
+  if (chickenModel) {
+    const intersects = raycaster.intersectObject(chickenModel, true);
+    if (intersects.length > 0) {
+      revealEggsOneByOne();
     }
+  }
 }
 
-window.addEventListener('click', onClick);
+
+window.addEventListener('click', handleTap);         // Desktop
+window.addEventListener('touchstart', handleTap);    // Mobile
+
 
 function revealEggsOneByOne() {
     if (revealedEggs >= eggs.length) return;
@@ -201,14 +204,26 @@ function revealEggsOneByOne() {
 }
 
 
+// window.addEventListener('mousemove', (event) => {
+//     // Convert to normalized device coordinates (-1 to +1)
+//     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+//     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+// });
+
 
 // Animation loop
 const clock = new THREE.Clock();
+
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
     const delta = clock.getDelta();
     if (mixer) mixer.update(delta);
+    // if (chickenModel) {
+    //     chickenModel.rotation.y = mouse.x * ; // rotate left/right
+    //     chickenModel.rotation.x = mouse.y * 0.3; // rotate up/down (optional)
+    // }
+
     renderer.render(scene, camera);
 }
 animate();
