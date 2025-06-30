@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/controls/OrbitControls.js';
 import { DRACOLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/DRACOLoader.js';
 import { TextureLoader } from 'three';
-
+import { gsap } from "https://cdn.skypack.dev/gsap@3.9.1";
 
 let scene, camera, renderer, mixer;
 
@@ -19,6 +19,21 @@ camera = new THREE.PerspectiveCamera(
 
 camera.position.z = .5;
 camera.position.y = .3;
+
+camera.position.set(0, 0, 1.4);
+
+gsap.to(camera.position, {
+  duration: 3,     // 2 seconds animation
+  y: 0.3,
+  z: 0.5,
+  ease: 'power2.out',
+  onUpdate: () => {
+    camera.lookAt(0, 0, 0);  // Keep camera looking at the center during animation
+  },
+  onComplete: () => {
+    camera.lookAt(0, 0, 0);  // Final lookAt to keep camera steady
+  }
+});
 
 renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
