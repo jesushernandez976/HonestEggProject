@@ -8,10 +8,26 @@ canvas {
 }
 
 
-/* From Uiverse.io by ryota1231 */ 
+.acp {
+  position: absolute;
+  bottom: 1px; 
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 9px;
+  font-family: helvetica;
+  
+}
+
+.acp a {
+  color: lightgrey;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .animated-button {
   position: absolute;
-  bottom: 40px; /* distance from bottom */
+  bottom: 50px; /* distance from bottom */
   left: 50%;
   transform: translateX(-50%);
   display: flex;

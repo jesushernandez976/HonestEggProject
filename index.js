@@ -82,39 +82,6 @@ function updateSceneBackground() {
 updateSceneBackground();
 
 
-const eggPoints = [];
-for (let i = 0; i < 50; i++) {
-    const t = i / 50;
-    const x = Math.sin(Math.PI * t) * 0.5;
-    const y = t * 1.5 - 0.75;
-    eggPoints.push(new THREE.Vector2(x, y));
-}
-
-const eggs = []; // store eggs globally
-
-const eggGeometry = new THREE.LatheGeometry(eggPoints, 64);
-const eggMaterial = new THREE.MeshStandardMaterial({ color: 0xfff1c1, roughness: 0.6 });
-
-// Create multiple eggs
-for (let i = 0; i < 40; i++) {
-    const egg = new THREE.Mesh(eggGeometry, eggMaterial);
-
-    // Scale and position
-    egg.scale.set(0.02, 0.02, 0.02);
-    egg.position.set(-0.22 + Math.random() * .25, -0.2, Math.random() * -0.1); // slight spread
-
-    // Random rotation
-    egg.rotation.y = Math.random() * Math.PI * 2;
-    egg.rotation.x = Math.random() * 0.5 - 0.25;
-    egg.rotation.z = Math.random() * 0.5 - 0.25;
-
-    egg.visible = false; // initially hidden
-    scene.add(egg);
-    eggs.push(egg);
-}
-
-
-
 // Load GLTF model
 const loader = new GLTFLoader();
 
@@ -163,26 +130,59 @@ loader.load(
     }
 );
 
+const eggPoints = [];
+for (let i = 0; i < 50; i++) {
+    const t = i / 50;
+    const x = Math.sin(Math.PI * t) * 0.5;
+    const y = t * 1.5 - 0.75;
+    eggPoints.push(new THREE.Vector2(x, y));
+}
+
+const eggs = []; // store eggs globally
+
+const eggGeometry = new THREE.LatheGeometry(eggPoints, 64);
+const eggMaterial = new THREE.MeshStandardMaterial({ color: 0xfff1c1, roughness: 0.6 });
+
+// Create multiple eggs
+for (let i = 0; i < 40; i++) {
+    const egg = new THREE.Mesh(eggGeometry, eggMaterial);
+
+    // Scale and position
+    egg.scale.set(0.02, 0.02, 0.02);
+    egg.position.set(-0.22 + Math.random() * .25, -0.2, Math.random() * -0.1); // slight spread
+
+    // Random rotation
+    egg.rotation.y = Math.random() * Math.PI * 2;
+    egg.rotation.x = Math.random() * 0.5 - 0.25;
+    egg.rotation.z = Math.random() * 0.5 - 0.25;
+
+    egg.visible = false; // initially hidden
+    scene.add(egg);
+    eggs.push(egg);
+}
+
+
+
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 let revealedEggs = 0;
 
 function handleTap(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  const touch = event.touches ? event.touches[0] : event;
-  mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+    const touch = event.touches ? event.touches[0] : event;
+    mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
 
-  raycaster.setFromCamera(mouse, camera);
+    raycaster.setFromCamera(mouse, camera);
 
-  if (chickenModel) {
-    const intersects = raycaster.intersectObject(chickenModel, true);
-    if (intersects.length > 0) {
-      revealEggsOneByOne();
+    if (chickenModel) {
+        const intersects = raycaster.intersectObject(chickenModel, true);
+        if (intersects.length > 0) {
+            revealEggsOneByOne();
+        }
     }
-  }
 }
 
 
@@ -191,17 +191,36 @@ window.addEventListener('touchstart', handleTap);    // Mobile
 
 
 function revealEggsOneByOne() {
-    if (revealedEggs >= eggs.length) return;
+    let revealed = 0;
 
     const interval = setInterval(() => {
-        if (revealedEggs >= eggs.length) {
+        if (revealed >= eggs.length) {
             clearInterval(interval);
             return;
         }
-        eggs[revealedEggs].visible = true;
-        revealedEggs++;
-    }, 100); // one egg every 100ms (adjust as needed)
+
+        const egg = eggs[revealed];
+        egg.visible = true;
+
+        // Animate fall
+        gsap.to(egg.position, {
+            duration: 0.6,
+            y: -0.2, // final position
+            ease: 'bounce.out'
+        });
+
+        // Optional: animate subtle spin
+        gsap.to(egg.rotation, {
+            duration: 0.6,
+            x: egg.rotation.x + Math.random() * 0.2,
+            z: egg.rotation.z + Math.random() * 0.2,
+            ease: 'power1.out'
+        });
+
+        revealed++;
+    }, 100); // drop each egg with a slight delay
 }
+
 
 
 // window.addEventListener('mousemove', (event) => {
