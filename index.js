@@ -96,7 +96,7 @@ const eggGeometry = new THREE.LatheGeometry(eggPoints, 64);
 const eggMaterial = new THREE.MeshStandardMaterial({ color: 0xfff1c1, roughness: 0.6 });
 
 // Create multiple eggs
-for (let i = 0; i < 30; i++) {
+for (let i = 0; i < 40; i++) {
     const egg = new THREE.Mesh(eggGeometry, eggMaterial);
 
     // Scale and position
