@@ -96,7 +96,7 @@ let grassModel;
 
 // Load chicken model
 loader.load(
-    './assets/chicken_rig.glb',
+    './assets/chicken_rig2.glb',
     function (gltf) {
         chickenModel = gltf.scene;
         chickenModel.position.set(0, -0.2, 0);
