@@ -25,7 +25,7 @@ camera.position.set(0, 0, 1.4);
 gsap.to(camera.position, {
     duration: 2,     // 2 seconds animation
     y: 0.3,
-    z: 0.5,
+    z: 0.6,
     ease: 'power2.out',
     onUpdate: () => {
         camera.lookAt(0, 0, 0);  // Keep camera looking at the center during animation
@@ -83,7 +83,7 @@ function updateSceneBackground() {
 updateSceneBackground();
 
 
-// Load GLTF model
+
 // Create a loading manager
 const manager = new THREE.LoadingManager();
 
