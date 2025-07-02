@@ -5,6 +5,7 @@ body {
 
 canvas {
   display: none;
+  z-index: 1;
 }
 
 #loading-screen {
@@ -14,7 +15,7 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 99999;
 }
 
 .spinner {
@@ -59,26 +60,29 @@ canvas {
     transform: rotate(1turn);
   }
 }
-
 .acp {
   position: absolute;
-  bottom: 1px;
+  bottom: 5px;
   left: 50%;
   transform: translateX(-50%);
   color: white;
   font-size: 9px;
   font-family: helvetica;
+  pointer-events: auto;
+  z-index: 9999; /* Add this line */
 }
 
 .acp a {
   color: lightgrey;
   text-decoration: none;
   cursor: pointer;
+  pointer-events: auto;
+  display: inline-block;
 }
 
 .animated-button {
   position: absolute;
-  bottom: 50px; /* distance from bottom */
+  bottom: 50px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;

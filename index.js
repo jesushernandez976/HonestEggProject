@@ -17,15 +17,14 @@ camera = new THREE.PerspectiveCamera(
 );
 
 
-camera.position.z = .5;
-camera.position.y = .3;
+
 
 camera.position.set(0, 0, 1.4);
 
 gsap.to(camera.position, {
     duration: 2,     // 2 seconds animation
     y: 0.3,
-    z: 0.6,
+    z: .5,
     ease: 'power2.out',
     onUpdate: () => {
         camera.lookAt(0, 0, 0);  // Keep camera looking at the center during animation
@@ -37,7 +36,7 @@ gsap.to(camera.position, {
 
 renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+document.getElementById('canvas-container').appendChild(renderer.domElement);
 
 // Add ambient light and directional light
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
@@ -184,6 +183,11 @@ const mouse = new THREE.Vector2();
 let revealedEggs = 0;
 
 function handleTap(event) {
+    // Check if the click is on a button or link - if so, don't interfere
+    if (event.target.closest('button') || event.target.closest('a')) {
+        return; // Let the button/link handle the click normally
+    }
+
     event.preventDefault();
 
     const touch = event.touches ? event.touches[0] : event;
@@ -201,8 +205,8 @@ function handleTap(event) {
 }
 
 
-window.addEventListener('click', handleTap);         // Desktop
-window.addEventListener('touchstart', handleTap);    // Mobile
+renderer.domElement.addEventListener('click', handleTap);
+renderer.domElement.addEventListener('touchstart', handleTap);
 
 
 function revealEggsOneByOne() {
@@ -238,14 +242,6 @@ function revealEggsOneByOne() {
 
 
 
-// window.addEventListener('mousemove', (event) => {
-//     // Convert to normalized device coordinates (-1 to +1)
-//     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-//     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-// });
-
-
-
 // Create a pivot at the center and attach the camera
 const cameraPivot = new THREE.Object3D();
 scene.add(cameraPivot);
@@ -273,10 +269,7 @@ function animate() {
     controls.update();
     const delta = clock.getDelta();
     if (mixer) mixer.update(delta);
-    // if (chickenModel) {
-    //     chickenModel.rotation.y = mouse.x * ; // rotate left/right
-    //     chickenModel.rotation.x = mouse.y * 0.3; // rotate up/down (optional)
-    // }
+
 
     renderer.render(scene, camera);
 }
