@@ -84,11 +84,24 @@ updateSceneBackground();
 
 
 // Load GLTF model
-const loader = new GLTFLoader();
+// Create a loading manager
+const manager = new THREE.LoadingManager();
 
+// When all assets are fully loaded
+manager.onLoad = function () {
+    document.getElementById('loading-screen').style.display = 'none';
+    renderer.domElement.style.display = 'block'; // Show canvas
+};
+
+// Optional: Show progress (for future percentage loader)
+manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+    console.log(`Loaded ${itemsLoaded} of ${itemsTotal}: ${url}`);
+};
+
+// GLTFLoader with DRACO and manager
+const loader = new GLTFLoader(manager);
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/libs/draco/');
-
 loader.setDRACOLoader(dracoLoader);
 
 let chickenModel;
@@ -121,8 +134,8 @@ loader.load(
     './assets/grassopt.glb',
     function (gltf) {
         grassModel = gltf.scene;
-        grassModel.position.set(0, -.21, 0); // Adjust position as needed
-        grassModel.scale.set(.2, .3, .2);    // Adjust scale as needed
+        grassModel.position.set(0, -0.21, 0);
+        grassModel.scale.set(0.2, 0.3, 0.2);
         scene.add(grassModel);
     },
     undefined,
@@ -130,6 +143,7 @@ loader.load(
         console.error('Error loading grassopt.glb:', error);
     }
 );
+
 
 const eggPoints = [];
 for (let i = 0; i < 50; i++) {

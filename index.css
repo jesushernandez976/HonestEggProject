@@ -4,7 +4,43 @@ body {
 }
 
 canvas {
-  display: block;
+  display: none;
+}
+
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Your loader styles */
+.loader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  height: 2rem;
+  width: 2rem;
+  animation: spin 1s linear infinite;
+  stroke: #fff; /* White stroke for visibility on black */
+}
+
+.loading-text {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 
